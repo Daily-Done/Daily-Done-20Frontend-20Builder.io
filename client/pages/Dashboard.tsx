@@ -527,6 +527,9 @@ const Dashboard = () => {
           </div>
         </div>
       </section>
+
+      {/* Footer */}
+      <Footer />
     </div>
   );
 };
