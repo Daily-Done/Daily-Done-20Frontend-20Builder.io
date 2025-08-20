@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/components/ui/use-toast";
 import { useAuth } from "../contexts/AuthContext";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
-import Footer from '../components/Footer';
+import Footer from "../components/Footer";
 
 const Login = () => {
   const [formData, setFormData] = useState({
