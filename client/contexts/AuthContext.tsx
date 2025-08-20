@@ -31,10 +31,42 @@ interface SignupData {
   role?: 'user' | 'helper';
 }
 
-// API Configuration
-const API_BASE_URL = process.env.NODE_ENV === 'production' 
-  ? 'https://your-api-domain.com/api' 
-  : 'http://localhost:8080/api';
+// Demo users for frontend-only mode
+const DEMO_USERS = [
+  {
+    id: '1',
+    username: 'demo',
+    email: 'demo@dailydone.com',
+    name: 'Demo User',
+    role: 'user' as const,
+    password: 'Demo123!',
+    rating: 4.8,
+    completedTasks: 15,
+    moneySaved: 2340,
+  },
+  {
+    id: '2',
+    username: 'user',
+    email: 'user@example.com',
+    name: 'John Doe',
+    role: 'user' as const,
+    password: 'Password123!',
+    rating: 5.0,
+    completedTasks: 8,
+    moneySaved: 1200,
+  },
+  {
+    id: '3',
+    username: 'admin',
+    email: 'admin@dailydone.com',
+    name: 'Admin Helper',
+    role: 'helper' as const,
+    password: 'Admin123!',
+    rating: 4.9,
+    completedTasks: 42,
+    moneySaved: 0,
+  }
+];
 
 // Context
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -68,17 +100,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         const storedUser = localStorage.getItem('user_data');
 
         if (storedToken && storedUser) {
-          // Verify token with backend
-          const isValid = await verifyToken(storedToken);
-          
-          if (isValid) {
-            setToken(storedToken);
-            setUser(JSON.parse(storedUser));
-          } else {
-            // Token invalid, clear storage
-            localStorage.removeItem('auth_token');
-            localStorage.removeItem('user_data');
-          }
+          setToken(storedToken);
+          setUser(JSON.parse(storedUser));
         }
       } catch (error) {
         console.error('Auth initialization error:', error);
@@ -93,63 +116,34 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     initializeAuth();
   }, []);
 
-  // Verify token with backend
-  const verifyToken = async (token: string): Promise<boolean> => {
-    try {
-      const response = await fetch(`${API_BASE_URL}/auth/verify`, {
-        method: 'GET',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        // Update user data if returned
-        if (data.user) {
-          setUser(data.user);
-          localStorage.setItem('user_data', JSON.stringify(data.user));
-        }
-        return true;
-      }
-      return false;
-    } catch (error) {
-      console.error('Token verification error:', error);
-      return false;
-    }
-  };
-
-  // Login function
+  // Demo login function (frontend-only)
   const login = async (email: string, password: string): Promise<void> => {
     try {
       setIsLoading(true);
       
-      const response = await fetch(`${API_BASE_URL}/auth/login`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email, password }),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Login failed');
-      }
-
-      const data = await response.json();
+      // Simulate API delay
+      await new Promise(resolve => setTimeout(resolve, 1000));
       
-      if (data.success && data.token && data.user) {
-        setToken(data.token);
-        setUser(data.user);
-        
-        // Store in localStorage
-        localStorage.setItem('auth_token', data.token);
-        localStorage.setItem('user_data', JSON.stringify(data.user));
-      } else {
-        throw new Error('Invalid response from server');
+      // Find demo user
+      const demoUser = DEMO_USERS.find(u => u.email === email && u.password === password);
+      
+      if (!demoUser) {
+        throw new Error('Invalid email or password');
       }
+
+      // Generate demo token
+      const demoToken = `demo_token_${demoUser.id}_${Date.now()}`;
+      
+      // Remove password from user object
+      const { password: _, ...userWithoutPassword } = demoUser;
+      
+      setToken(demoToken);
+      setUser(userWithoutPassword);
+      
+      // Store in localStorage
+      localStorage.setItem('auth_token', demoToken);
+      localStorage.setItem('user_data', JSON.stringify(userWithoutPassword));
+      
     } catch (error) {
       console.error('Login error:', error);
       throw error;
@@ -158,36 +152,46 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   };
 
-  // Signup function
+  // Demo signup function (frontend-only)
   const signup = async (userData: SignupData): Promise<void> => {
     try {
       setIsLoading(true);
       
-      const response = await fetch(`${API_BASE_URL}/auth/register`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(userData),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Signup failed');
-      }
-
-      const data = await response.json();
+      // Simulate API delay
+      await new Promise(resolve => setTimeout(resolve, 1500));
       
-      if (data.success && data.token && data.user) {
-        setToken(data.token);
-        setUser(data.user);
-        
-        // Store in localStorage
-        localStorage.setItem('auth_token', data.token);
-        localStorage.setItem('user_data', JSON.stringify(data.user));
-      } else {
-        throw new Error('Invalid response from server');
+      // Check if email already exists
+      if (DEMO_USERS.find(u => u.email === userData.email)) {
+        throw new Error('Email already registered');
       }
+      
+      // Check if username already exists
+      if (DEMO_USERS.find(u => u.username === userData.username)) {
+        throw new Error('Username already taken');
+      }
+
+      // Create new user
+      const newUser: User = {
+        id: (DEMO_USERS.length + 1).toString(),
+        username: userData.username,
+        email: userData.email,
+        name: userData.name,
+        role: userData.role || 'user',
+        rating: 5.0,
+        completedTasks: 0,
+        moneySaved: 0,
+      };
+
+      // Generate demo token
+      const demoToken = `demo_token_${newUser.id}_${Date.now()}`;
+      
+      setToken(demoToken);
+      setUser(newUser);
+      
+      // Store in localStorage
+      localStorage.setItem('auth_token', demoToken);
+      localStorage.setItem('user_data', JSON.stringify(newUser));
+      
     } catch (error) {
       console.error('Signup error:', error);
       throw error;
@@ -204,19 +208,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     // Clear localStorage
     localStorage.removeItem('auth_token');
     localStorage.removeItem('user_data');
-    
-    // Optional: Call backend to invalidate token
-    if (token) {
-      fetch(`${API_BASE_URL}/auth/logout`, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
-      }).catch(error => {
-        console.error('Logout backend call failed:', error);
-      });
-    }
   };
 
   // Update user data
@@ -246,35 +237,18 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   );
 };
 
-// API Helper function with auth
+// Demo API helper function (frontend-only)
 export const apiCall = async (
   endpoint: string, 
   options: RequestInit = {}
 ): Promise<any> => {
-  const token = localStorage.getItem('auth_token');
+  // Simulate API calls with demo data
+  console.log(`Demo API call: ${endpoint}`, options);
   
-  const config: RequestInit = {
-    ...options,
-    headers: {
-      'Content-Type': 'application/json',
-      ...(token && { 'Authorization': `Bearer ${token}` }),
-      ...options.headers,
-    },
-  };
-
-  const response = await fetch(`${API_BASE_URL}${endpoint}`, config);
-  
-  if (!response.ok) {
-    if (response.status === 401) {
-      // Token expired or invalid
-      localStorage.removeItem('auth_token');
-      localStorage.removeItem('user_data');
-      window.location.href = '/login';
-    }
-    
-    const errorData = await response.json().catch(() => ({}));
-    throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
-  }
-  
-  return response.json();
+  // Return mock success response
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve({ success: true, message: 'Demo API response' });
+    }, 500);
+  });
 };
