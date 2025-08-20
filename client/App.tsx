@@ -24,9 +24,15 @@ import { AuthProvider, useAuth } from "./contexts/AuthContext";
 const queryClient = new QueryClient();
 
 // Protected Route Component with role-based redirection
-const ProtectedRoute = ({ children, requiredRole }: { children: React.ReactNode; requiredRole?: 'user' | 'helper' | 'admin' }) => {
+const ProtectedRoute = ({
+  children,
+  requiredRole,
+}: {
+  children: React.ReactNode;
+  requiredRole?: "user" | "helper" | "admin";
+}) => {
   const { isAuthenticated, isLoading, user } = useAuth();
-  
+
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -34,29 +40,29 @@ const ProtectedRoute = ({ children, requiredRole }: { children: React.ReactNode;
       </div>
     );
   }
-  
+
   if (!isAuthenticated) {
     return <Navigate to="/login" replace />;
   }
 
   // If a specific role is required and user doesn't have it, redirect to appropriate dashboard
   if (requiredRole && user?.role !== requiredRole) {
-    if (user?.role === 'helper') {
+    if (user?.role === "helper") {
       return <Navigate to="/helper-dashboard" replace />;
-    } else if (user?.role === 'admin') {
+    } else if (user?.role === "admin") {
       return <Navigate to="/admin-dashboard" replace />;
     } else {
       return <Navigate to="/dashboard" replace />;
     }
   }
-  
+
   return <>{children}</>;
 };
 
 // Public Route Component (redirect if authenticated)
 const PublicRoute = ({ children }: { children: React.ReactNode }) => {
   const { isAuthenticated, isLoading, user } = useAuth();
-  
+
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -64,18 +70,18 @@ const PublicRoute = ({ children }: { children: React.ReactNode }) => {
       </div>
     );
   }
-  
+
   if (isAuthenticated) {
     // Redirect to appropriate dashboard based on role
-    if (user?.role === 'helper') {
+    if (user?.role === "helper") {
       return <Navigate to="/helper-dashboard" replace />;
-    } else if (user?.role === 'admin') {
+    } else if (user?.role === "admin") {
       return <Navigate to="/admin-dashboard" replace />;
     } else {
       return <Navigate to="/dashboard" replace />;
     }
   }
-  
+
   return <>{children}</>;
 };
 
@@ -90,47 +96,61 @@ const App = () => (
             {/* Public Routes */}
             <Route path="/" element={<Index />} />
             <Route path="/helper-signup" element={<HelperSignup />} />
-            
+
             {/* Auth Routes */}
-            <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
-            <Route path="/signup" element={<PublicRoute><Signup /></PublicRoute>} />
-            
+            <Route
+              path="/login"
+              element={
+                <PublicRoute>
+                  <Login />
+                </PublicRoute>
+              }
+            />
+            <Route
+              path="/signup"
+              element={
+                <PublicRoute>
+                  <Signup />
+                </PublicRoute>
+              }
+            />
+
             {/* Protected Routes - Role-based */}
-            <Route 
-              path="/dashboard" 
+            <Route
+              path="/dashboard"
               element={
                 <ProtectedRoute requiredRole="user">
                   <Dashboard />
                 </ProtectedRoute>
-              } 
+              }
             />
-            <Route 
-              path="/helper-dashboard" 
+            <Route
+              path="/helper-dashboard"
               element={
                 <ProtectedRoute requiredRole="helper">
                   <HelperDashboard />
                 </ProtectedRoute>
-              } 
+              }
             />
-            <Route 
-              path="/admin-dashboard" 
+            <Route
+              path="/admin-dashboard"
               element={
                 <ProtectedRoute requiredRole="admin">
                   <AdminDashboard />
                 </ProtectedRoute>
-              } 
+              }
             />
-            
+
             {/* Profile page - accessible to all authenticated users */}
-            <Route 
-              path="/profile" 
+            <Route
+              path="/profile"
               element={
                 <ProtectedRoute>
                   <Profile />
                 </ProtectedRoute>
-              } 
+              }
             />
-            
+
             {/* Catch-all route */}
             <Route path="*" element={<NotFound />} />
           </Routes>

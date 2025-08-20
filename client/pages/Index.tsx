@@ -14,7 +14,7 @@ import {
 import { Slider } from "@/components/ui/slider";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/components/ui/use-toast";
-import Footer from '../components/Footer';
+import Footer from "../components/Footer";
 
 const Index = () => {
   const [taskData, setTaskData] = useState({
