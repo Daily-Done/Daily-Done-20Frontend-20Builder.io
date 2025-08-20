@@ -1,4 +1,10 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  ReactNode,
+} from "react";
 
 // Types
 interface User {
@@ -6,7 +12,7 @@ interface User {
   username: string;
   email: string;
   name: string;
-  role: 'user' | 'helper';
+  role: "user" | "helper";
   rating?: number;
   completedTasks?: number;
   moneySaved?: number;
@@ -28,44 +34,44 @@ interface SignupData {
   email: string;
   password: string;
   name: string;
-  role?: 'user' | 'helper';
+  role?: "user" | "helper";
 }
 
 // Demo users for frontend-only mode
 const DEMO_USERS = [
   {
-    id: '1',
-    username: 'demo',
-    email: 'demo@dailydone.com',
-    name: 'Demo User',
-    role: 'user' as const,
-    password: 'Demo123!',
+    id: "1",
+    username: "demo",
+    email: "demo@dailydone.com",
+    name: "Demo User",
+    role: "user" as const,
+    password: "Demo123!",
     rating: 4.8,
     completedTasks: 15,
     moneySaved: 2340,
   },
   {
-    id: '2',
-    username: 'user',
-    email: 'user@example.com',
-    name: 'John Doe',
-    role: 'user' as const,
-    password: 'Password123!',
+    id: "2",
+    username: "user",
+    email: "user@example.com",
+    name: "John Doe",
+    role: "user" as const,
+    password: "Password123!",
     rating: 5.0,
     completedTasks: 8,
     moneySaved: 1200,
   },
   {
-    id: '3',
-    username: 'admin',
-    email: 'admin@dailydone.com',
-    name: 'Admin Helper',
-    role: 'helper' as const,
-    password: 'Admin123!',
+    id: "3",
+    username: "admin",
+    email: "admin@dailydone.com",
+    name: "Admin Helper",
+    role: "helper" as const,
+    password: "Admin123!",
     rating: 4.9,
     completedTasks: 42,
     moneySaved: 0,
-  }
+  },
 ];
 
 // Context
@@ -75,7 +81,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider');
+    throw new Error("useAuth must be used within an AuthProvider");
   }
   return context;
 };
@@ -96,18 +102,18 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   useEffect(() => {
     const initializeAuth = async () => {
       try {
-        const storedToken = localStorage.getItem('auth_token');
-        const storedUser = localStorage.getItem('user_data');
+        const storedToken = localStorage.getItem("auth_token");
+        const storedUser = localStorage.getItem("user_data");
 
         if (storedToken && storedUser) {
           setToken(storedToken);
           setUser(JSON.parse(storedUser));
         }
       } catch (error) {
-        console.error('Auth initialization error:', error);
+        console.error("Auth initialization error:", error);
         // Clear invalid data
-        localStorage.removeItem('auth_token');
-        localStorage.removeItem('user_data');
+        localStorage.removeItem("auth_token");
+        localStorage.removeItem("user_data");
       } finally {
         setIsLoading(false);
       }
@@ -120,32 +126,33 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const login = async (email: string, password: string): Promise<void> => {
     try {
       setIsLoading(true);
-      
+
       // Simulate API delay
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+
       // Find demo user
-      const demoUser = DEMO_USERS.find(u => u.email === email && u.password === password);
-      
+      const demoUser = DEMO_USERS.find(
+        (u) => u.email === email && u.password === password,
+      );
+
       if (!demoUser) {
-        throw new Error('Invalid email or password');
+        throw new Error("Invalid email or password");
       }
 
       // Generate demo token
       const demoToken = `demo_token_${demoUser.id}_${Date.now()}`;
-      
+
       // Remove password from user object
       const { password: _, ...userWithoutPassword } = demoUser;
-      
+
       setToken(demoToken);
       setUser(userWithoutPassword);
-      
+
       // Store in localStorage
-      localStorage.setItem('auth_token', demoToken);
-      localStorage.setItem('user_data', JSON.stringify(userWithoutPassword));
-      
+      localStorage.setItem("auth_token", demoToken);
+      localStorage.setItem("user_data", JSON.stringify(userWithoutPassword));
     } catch (error) {
-      console.error('Login error:', error);
+      console.error("Login error:", error);
       throw error;
     } finally {
       setIsLoading(false);
@@ -156,18 +163,18 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const signup = async (userData: SignupData): Promise<void> => {
     try {
       setIsLoading(true);
-      
+
       // Simulate API delay
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
+      await new Promise((resolve) => setTimeout(resolve, 1500));
+
       // Check if email already exists
-      if (DEMO_USERS.find(u => u.email === userData.email)) {
-        throw new Error('Email already registered');
+      if (DEMO_USERS.find((u) => u.email === userData.email)) {
+        throw new Error("Email already registered");
       }
-      
+
       // Check if username already exists
-      if (DEMO_USERS.find(u => u.username === userData.username)) {
-        throw new Error('Username already taken');
+      if (DEMO_USERS.find((u) => u.username === userData.username)) {
+        throw new Error("Username already taken");
       }
 
       // Create new user
@@ -176,7 +183,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         username: userData.username,
         email: userData.email,
         name: userData.name,
-        role: userData.role || 'user',
+        role: userData.role || "user",
         rating: 5.0,
         completedTasks: 0,
         moneySaved: 0,
@@ -184,16 +191,15 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
       // Generate demo token
       const demoToken = `demo_token_${newUser.id}_${Date.now()}`;
-      
+
       setToken(demoToken);
       setUser(newUser);
-      
+
       // Store in localStorage
-      localStorage.setItem('auth_token', demoToken);
-      localStorage.setItem('user_data', JSON.stringify(newUser));
-      
+      localStorage.setItem("auth_token", demoToken);
+      localStorage.setItem("user_data", JSON.stringify(newUser));
     } catch (error) {
-      console.error('Signup error:', error);
+      console.error("Signup error:", error);
       throw error;
     } finally {
       setIsLoading(false);
@@ -204,10 +210,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const logout = () => {
     setUser(null);
     setToken(null);
-    
+
     // Clear localStorage
-    localStorage.removeItem('auth_token');
-    localStorage.removeItem('user_data');
+    localStorage.removeItem("auth_token");
+    localStorage.removeItem("user_data");
   };
 
   // Update user data
@@ -215,7 +221,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     if (user) {
       const updatedUser = { ...user, ...userData };
       setUser(updatedUser);
-      localStorage.setItem('user_data', JSON.stringify(updatedUser));
+      localStorage.setItem("user_data", JSON.stringify(updatedUser));
     }
   };
 
@@ -230,25 +236,21 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     updateUser,
   };
 
-  return (
-    <AuthContext.Provider value={value}>
-      {children}
-    </AuthContext.Provider>
-  );
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
 
 // Demo API helper function (frontend-only)
 export const apiCall = async (
-  endpoint: string, 
-  options: RequestInit = {}
+  endpoint: string,
+  options: RequestInit = {},
 ): Promise<any> => {
   // Simulate API calls with demo data
   console.log(`Demo API call: ${endpoint}`, options);
-  
+
   // Return mock success response
   return new Promise((resolve) => {
     setTimeout(() => {
-      resolve({ success: true, message: 'Demo API response' });
+      resolve({ success: true, message: "Demo API response" });
     }, 500);
   });
 };

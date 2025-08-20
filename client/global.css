@@ -103,7 +103,9 @@
 
   body {
     @apply bg-background text-foreground font-sans;
-    font-feature-settings: "rlig" 1, "calt" 1;
+    font-feature-settings:
+      "rlig" 1,
+      "calt" 1;
   }
 
   /* Smooth scrolling for better UX */
@@ -194,11 +196,19 @@
 
   /* Custom gradient utilities for DailyDone brand */
   .bg-daily-done-gradient {
-    background: linear-gradient(135deg, hsl(var(--daily-done-blue)) 0%, hsl(var(--daily-done-sky)) 100%);
+    background: linear-gradient(
+      135deg,
+      hsl(var(--daily-done-blue)) 0%,
+      hsl(var(--daily-done-sky)) 100%
+    );
   }
 
   .text-daily-done-gradient {
-    background: linear-gradient(135deg, hsl(var(--daily-done-blue)) 0%, hsl(var(--daily-done-sky)) 100%);
+    background: linear-gradient(
+      135deg,
+      hsl(var(--daily-done-blue)) 0%,
+      hsl(var(--daily-done-sky)) 100%
+    );
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -215,7 +225,9 @@
 
   /* Improved button hover effects */
   .btn-hover-lift {
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    transition:
+      transform 0.2s ease,
+      box-shadow 0.2s ease;
   }
 
   .btn-hover-lift:hover {
@@ -225,7 +237,9 @@
 
   /* Card hover effects */
   .card-hover {
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    transition:
+      transform 0.3s ease,
+      box-shadow 0.3s ease;
   }
 
   .card-hover:hover {
@@ -235,7 +249,9 @@
 
   /* Custom input focus styles */
   .input-focus {
-    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    transition:
+      border-color 0.2s ease,
+      box-shadow 0.2s ease;
   }
 
   .input-focus:focus {
@@ -277,11 +293,11 @@
     .responsive-text-4xl {
       @apply text-2xl;
     }
-    
+
     .responsive-text-3xl {
       @apply text-xl;
     }
-    
+
     .responsive-text-2xl {
       @apply text-lg;
     }
@@ -292,7 +308,7 @@
     .no-print {
       display: none !important;
     }
-    
+
     .print-break-after {
       page-break-after: always;
     }

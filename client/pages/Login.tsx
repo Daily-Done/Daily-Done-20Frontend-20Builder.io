@@ -1,69 +1,71 @@
-import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { useToast } from '@/components/ui/use-toast';
-import { useAuth } from '../contexts/AuthContext';
-import { Eye, EyeOff, Loader2 } from 'lucide-react';
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { useToast } from "@/components/ui/use-toast";
+import { useAuth } from "../contexts/AuthContext";
+import { Eye, EyeOff, Loader2 } from "lucide-react";
 
 const Login = () => {
   const [formData, setFormData] = useState({
-    email: '',
-    password: ''
+    email: "",
+    password: "",
   });
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [errors, setErrors] = useState<{[key: string]: string}>({});
-  
+  const [errors, setErrors] = useState<{ [key: string]: string }>({});
+
   const { login } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
 
   const validateForm = () => {
-    const newErrors: {[key: string]: string} = {};
-    
+    const newErrors: { [key: string]: string } = {};
+
     if (!formData.email) {
-      newErrors.email = 'Email is required';
+      newErrors.email = "Email is required";
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = 'Please enter a valid email address';
+      newErrors.email = "Please enter a valid email address";
     }
-    
+
     if (!formData.password) {
-      newErrors.password = 'Password is required';
+      newErrors.password = "Password is required";
     } else if (formData.password.length < 6) {
-      newErrors.password = 'Password must be at least 6 characters';
+      newErrors.password = "Password must be at least 6 characters";
     }
-    
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!validateForm()) return;
-    
+
     setIsLoading(true);
-    
+
     try {
       await login(formData.email, formData.password);
-      
+
       toast({
         title: "Welcome back!",
         description: "You have been successfully logged in.",
       });
-      
+
       // Navigate to dashboard
-      navigate('/dashboard');
-      
+      navigate("/dashboard");
     } catch (error) {
-      console.error('Login error:', error);
-      
+      console.error("Login error:", error);
+
       toast({
         title: "Login Failed",
-        description: error instanceof Error ? error.message : "Invalid email or password. Please try again.",
+        description:
+          error instanceof Error
+            ? error.message
+            : "Invalid email or password. Please try again.",
         variant: "destructive",
       });
     } finally {
@@ -73,18 +75,19 @@ const Login = () => {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
-    
+    setFormData((prev) => ({ ...prev, [name]: value }));
+
     // Clear error when user starts typing
     if (errors[name]) {
-      setErrors(prev => ({ ...prev, [name]: '' }));
+      setErrors((prev) => ({ ...prev, [name]: "" }));
     }
   };
 
   const handleForgotPassword = () => {
     toast({
       title: "Password Reset",
-      description: "Password reset functionality will be implemented soon. Please contact support for now.",
+      description:
+        "Password reset functionality will be implemented soon. Please contact support for now.",
     });
   };
 
@@ -97,12 +100,18 @@ const Login = () => {
               <div className="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center text-white text-lg font-bold">
                 🤝
               </div>
-              <span className="text-2xl font-bold text-gray-900">DailyDone</span>
+              <span className="text-2xl font-bold text-gray-900">
+                DailyDone
+              </span>
             </div>
-            <CardTitle className="text-2xl font-bold text-gray-900">Welcome back</CardTitle>
-            <p className="text-gray-600">Enter your credentials to access your account</p>
+            <CardTitle className="text-2xl font-bold text-gray-900">
+              Welcome back
+            </CardTitle>
+            <p className="text-gray-600">
+              Enter your credentials to access your account
+            </p>
           </CardHeader>
-          
+
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="space-y-2">
@@ -114,7 +123,7 @@ const Login = () => {
                   placeholder="Enter your email address"
                   value={formData.email}
                   onChange={handleChange}
-                  className={errors.email ? 'border-red-500 bg-red-50' : ''}
+                  className={errors.email ? "border-red-500 bg-red-50" : ""}
                   disabled={isLoading}
                 />
                 {errors.email && (
@@ -128,11 +137,15 @@ const Login = () => {
                   <Input
                     id="password"
                     name="password"
-                    type={showPassword ? 'text' : 'password'}
+                    type={showPassword ? "text" : "password"}
                     placeholder="Enter your password"
                     value={formData.password}
                     onChange={handleChange}
-                    className={errors.password ? 'border-red-500 bg-red-50 pr-10' : 'pr-10'}
+                    className={
+                      errors.password
+                        ? "border-red-500 bg-red-50 pr-10"
+                        : "pr-10"
+                    }
                     disabled={isLoading}
                   />
                   <button
@@ -160,8 +173,8 @@ const Login = () => {
                 </button>
               </div>
 
-              <Button 
-                type="submit" 
+              <Button
+                type="submit"
                 className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800"
                 disabled={isLoading}
               >
@@ -171,7 +184,7 @@ const Login = () => {
                     Signing in...
                   </>
                 ) : (
-                  'Sign In'
+                  "Sign In"
                 )}
               </Button>
             </form>
@@ -182,10 +195,12 @@ const Login = () => {
                   <div className="w-full border-t border-gray-300" />
                 </div>
                 <div className="relative flex justify-center text-sm">
-                  <span className="px-2 bg-white text-gray-500">Don't have an account?</span>
+                  <span className="px-2 bg-white text-gray-500">
+                    Don't have an account?
+                  </span>
                 </div>
               </div>
-              
+
               <div className="mt-4">
                 <Link to="/signup">
                   <Button variant="outline" className="w-full">
@@ -197,7 +212,9 @@ const Login = () => {
 
             {/* Demo Credentials Info */}
             <div className="mt-6 p-4 bg-blue-50 rounded-lg">
-              <h4 className="text-sm font-semibold text-blue-900 mb-2">Demo Credentials:</h4>
+              <h4 className="text-sm font-semibold text-blue-900 mb-2">
+                Demo Credentials:
+              </h4>
               <div className="text-xs text-blue-700 space-y-1">
                 <div>📧 demo@dailydone.com / Demo123!</div>
                 <div>👤 user@example.com / Password123!</div>
@@ -206,7 +223,7 @@ const Login = () => {
             </div>
           </CardContent>
         </Card>
-        
+
         <div className="mt-8 text-center">
           <Link to="/" className="text-white/80 hover:text-white text-sm">
             ← Back to homepage

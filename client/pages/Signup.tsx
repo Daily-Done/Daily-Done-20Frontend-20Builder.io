@@ -1,34 +1,40 @@
-import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { useToast } from '@/components/ui/use-toast';
-import { useAuth } from '../contexts/AuthContext';
-import { Eye, EyeOff, Loader2, Check, X } from 'lucide-react';
-import { Badge } from '@/components/ui/badge';
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { useToast } from "@/components/ui/use-toast";
+import { useAuth } from "../contexts/AuthContext";
+import { Eye, EyeOff, Loader2, Check, X } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 
 const Signup = () => {
   const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState({
-    username: '',
-    email: '',
-    password: '',
-    confirmPassword: '',
-    name: '',
-    role: 'user' as 'user' | 'helper',
-    dob: '',
-    otp: ''
+    username: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+    name: "",
+    role: "user" as "user" | "helper",
+    dob: "",
+    otp: "",
   });
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [errors, setErrors] = useState<{[key: string]: string}>({});
+  const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [passwordStrength, setPasswordStrength] = useState(0);
   const [otpSent, setOtpSent] = useState(false);
-  
+
   const { signup } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
@@ -41,70 +47,75 @@ const Signup = () => {
     if (/[A-Z]/.test(password)) strength += 15;
     if (/\d/.test(password)) strength += 15;
     if (/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\?]/.test(password)) strength += 15;
-    if (/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\?])/.test(password)) {
+    if (
+      /(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\?])/.test(
+        password,
+      )
+    ) {
       strength += 10;
     }
     return Math.min(100, strength);
   };
 
   const getPasswordStrengthText = (strength: number) => {
-    if (strength < 30) return { text: 'Weak', color: 'bg-red-500' };
-    if (strength < 60) return { text: 'Fair', color: 'bg-yellow-500' };
-    if (strength < 80) return { text: 'Good', color: 'bg-blue-500' };
-    return { text: 'Strong', color: 'bg-green-500' };
+    if (strength < 30) return { text: "Weak", color: "bg-red-500" };
+    if (strength < 60) return { text: "Fair", color: "bg-yellow-500" };
+    if (strength < 80) return { text: "Good", color: "bg-blue-500" };
+    return { text: "Strong", color: "bg-green-500" };
   };
 
   const validateStep1 = () => {
-    const newErrors: {[key: string]: string} = {};
-    
+    const newErrors: { [key: string]: string } = {};
+
     if (!formData.email) {
-      newErrors.email = 'Email is required';
+      newErrors.email = "Email is required";
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = 'Please enter a valid email address';
+      newErrors.email = "Please enter a valid email address";
     }
-    
+
     if (!formData.username) {
-      newErrors.username = 'Username is required';
+      newErrors.username = "Username is required";
     } else if (!/^[a-zA-Z0-9_]{3,20}$/.test(formData.username)) {
-      newErrors.username = 'Username must be 3-20 characters: letters, numbers, and underscore only';
+      newErrors.username =
+        "Username must be 3-20 characters: letters, numbers, and underscore only";
     }
-    
+
     if (!formData.password) {
-      newErrors.password = 'Password is required';
+      newErrors.password = "Password is required";
     } else if (passwordStrength < 60) {
-      newErrors.password = 'Password must meet the strength requirements';
+      newErrors.password = "Password must meet the strength requirements";
     }
-    
+
     if (!formData.confirmPassword) {
-      newErrors.confirmPassword = 'Please confirm your password';
+      newErrors.confirmPassword = "Please confirm your password";
     } else if (formData.password !== formData.confirmPassword) {
-      newErrors.confirmPassword = 'Passwords do not match';
+      newErrors.confirmPassword = "Passwords do not match";
     }
-    
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
   const validateStep2 = () => {
-    const newErrors: {[key: string]: string} = {};
-    
+    const newErrors: { [key: string]: string } = {};
+
     if (!formData.name) {
-      newErrors.name = 'Full name is required';
+      newErrors.name = "Full name is required";
     } else if (formData.name.length < 2) {
-      newErrors.name = 'Name must be at least 2 characters long';
+      newErrors.name = "Name must be at least 2 characters long";
     }
-    
+
     if (!formData.dob) {
-      newErrors.dob = 'Date of birth is required';
+      newErrors.dob = "Date of birth is required";
     } else {
       const birthDate = new Date(formData.dob);
       const today = new Date();
       const age = today.getFullYear() - birthDate.getFullYear();
       if (age < 16) {
-        newErrors.dob = 'You must be at least 16 years old to sign up';
+        newErrors.dob = "You must be at least 16 years old to sign up";
       }
     }
-    
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -128,7 +139,7 @@ const Signup = () => {
     setIsLoading(true);
     try {
       // Simulate OTP sending
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      await new Promise((resolve) => setTimeout(resolve, 1000));
       setOtpSent(true);
       toast({
         title: "Verification Code Sent",
@@ -147,39 +158,41 @@ const Signup = () => {
 
   const handleFinalSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!formData.otp || formData.otp.length !== 6) {
-      setErrors({ otp: 'Please enter a valid 6-digit code' });
+      setErrors({ otp: "Please enter a valid 6-digit code" });
       return;
     }
-    
+
     setIsLoading(true);
-    
+
     try {
       await signup({
         username: formData.username,
         email: formData.email,
         password: formData.password,
         name: formData.name,
-        role: formData.role
+        role: formData.role,
       });
-      
+
       toast({
         title: "Account Created Successfully!",
         description: "Welcome to DailyDone! Redirecting to your dashboard...",
       });
-      
+
       // Navigate to dashboard
       setTimeout(() => {
-        navigate('/dashboard');
+        navigate("/dashboard");
       }, 1500);
-      
     } catch (error) {
-      console.error('Signup error:', error);
-      
+      console.error("Signup error:", error);
+
       toast({
         title: "Signup Failed",
-        description: error instanceof Error ? error.message : "Failed to create account. Please try again.",
+        description:
+          error instanceof Error
+            ? error.message
+            : "Failed to create account. Please try again.",
         variant: "destructive",
       });
     } finally {
@@ -189,15 +202,15 @@ const Signup = () => {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
-    
+    setFormData((prev) => ({ ...prev, [name]: value }));
+
     // Clear error when user starts typing
     if (errors[name]) {
-      setErrors(prev => ({ ...prev, [name]: '' }));
+      setErrors((prev) => ({ ...prev, [name]: "" }));
     }
-    
+
     // Update password strength
-    if (name === 'password') {
+    if (name === "password") {
       setPasswordStrength(calculatePasswordStrength(value));
     }
   };
@@ -213,7 +226,7 @@ const Signup = () => {
           placeholder="Enter your email address"
           value={formData.email}
           onChange={handleChange}
-          className={errors.email ? 'border-red-500 bg-red-50' : ''}
+          className={errors.email ? "border-red-500 bg-red-50" : ""}
           disabled={isLoading}
         />
         {errors.email && <p className="text-sm text-red-600">{errors.email}</p>}
@@ -227,11 +240,15 @@ const Signup = () => {
           placeholder="Choose a unique username"
           value={formData.username}
           onChange={handleChange}
-          className={errors.username ? 'border-red-500 bg-red-50' : ''}
+          className={errors.username ? "border-red-500 bg-red-50" : ""}
           disabled={isLoading}
         />
-        {errors.username && <p className="text-sm text-red-600">{errors.username}</p>}
-        <p className="text-xs text-gray-500">3-20 characters, letters, numbers and underscore only</p>
+        {errors.username && (
+          <p className="text-sm text-red-600">{errors.username}</p>
+        )}
+        <p className="text-xs text-gray-500">
+          3-20 characters, letters, numbers and underscore only
+        </p>
       </div>
 
       <div className="space-y-2">
@@ -240,11 +257,13 @@ const Signup = () => {
           <Input
             id="password"
             name="password"
-            type={showPassword ? 'text' : 'password'}
+            type={showPassword ? "text" : "password"}
             placeholder="Create a strong password"
             value={formData.password}
             onChange={handleChange}
-            className={errors.password ? 'border-red-500 bg-red-50 pr-10' : 'pr-10'}
+            className={
+              errors.password ? "border-red-500 bg-red-50 pr-10" : "pr-10"
+            }
             disabled={isLoading}
           />
           <button
@@ -259,7 +278,7 @@ const Signup = () => {
           <div className="space-y-2">
             <div className="flex items-center gap-2">
               <div className="flex-1 bg-gray-200 rounded-full h-2">
-                <div 
+                <div
                   className={`h-2 rounded-full transition-all ${getPasswordStrengthText(passwordStrength).color}`}
                   style={{ width: `${passwordStrength}%` }}
                 />
@@ -270,7 +289,9 @@ const Signup = () => {
             </div>
           </div>
         )}
-        {errors.password && <p className="text-sm text-red-600">{errors.password}</p>}
+        {errors.password && (
+          <p className="text-sm text-red-600">{errors.password}</p>
+        )}
       </div>
 
       <div className="space-y-2">
@@ -279,11 +300,15 @@ const Signup = () => {
           <Input
             id="confirmPassword"
             name="confirmPassword"
-            type={showConfirmPassword ? 'text' : 'password'}
+            type={showConfirmPassword ? "text" : "password"}
             placeholder="Confirm your password"
             value={formData.confirmPassword}
             onChange={handleChange}
-            className={errors.confirmPassword ? 'border-red-500 bg-red-50 pr-10' : 'pr-10'}
+            className={
+              errors.confirmPassword
+                ? "border-red-500 bg-red-50 pr-10"
+                : "pr-10"
+            }
             disabled={isLoading}
           />
           <button
@@ -294,10 +319,15 @@ const Signup = () => {
             {showConfirmPassword ? <EyeOff size={20} /> : <Eye size={20} />}
           </button>
         </div>
-        {errors.confirmPassword && <p className="text-sm text-red-600">{errors.confirmPassword}</p>}
+        {errors.confirmPassword && (
+          <p className="text-sm text-red-600">{errors.confirmPassword}</p>
+        )}
       </div>
 
-      <Button type="submit" className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800">
+      <Button
+        type="submit"
+        className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800"
+      >
         Continue
       </Button>
     </form>
@@ -313,7 +343,7 @@ const Signup = () => {
           placeholder="Enter your full name"
           value={formData.name}
           onChange={handleChange}
-          className={errors.name ? 'border-red-500 bg-red-50' : ''}
+          className={errors.name ? "border-red-500 bg-red-50" : ""}
           disabled={isLoading}
         />
         {errors.name && <p className="text-sm text-red-600">{errors.name}</p>}
@@ -327,7 +357,7 @@ const Signup = () => {
           type="date"
           value={formData.dob}
           onChange={handleChange}
-          className={errors.dob ? 'border-red-500 bg-red-50' : ''}
+          className={errors.dob ? "border-red-500 bg-red-50" : ""}
           disabled={isLoading}
         />
         {errors.dob && <p className="text-sm text-red-600">{errors.dob}</p>}
@@ -335,7 +365,12 @@ const Signup = () => {
 
       <div className="space-y-2">
         <Label>Account Type</Label>
-        <Select value={formData.role} onValueChange={(value: 'user' | 'helper') => setFormData(prev => ({ ...prev, role: value }))}>
+        <Select
+          value={formData.role}
+          onValueChange={(value: "user" | "helper") =>
+            setFormData((prev) => ({ ...prev, role: value }))
+          }
+        >
           <SelectTrigger>
             <SelectValue />
           </SelectTrigger>
@@ -347,16 +382,16 @@ const Signup = () => {
       </div>
 
       <div className="flex gap-3">
-        <Button 
-          type="button" 
-          variant="outline" 
+        <Button
+          type="button"
+          variant="outline"
           onClick={() => setCurrentStep(1)}
           className="flex-1"
         >
           Back
         </Button>
-        <Button 
-          type="submit" 
+        <Button
+          type="submit"
           className="flex-1 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800"
         >
           Continue
@@ -382,7 +417,11 @@ const Signup = () => {
           placeholder="Enter 6-digit code"
           value={formData.otp}
           onChange={handleChange}
-          className={errors.otp ? 'border-red-500 bg-red-50 text-center text-lg tracking-widest' : 'text-center text-lg tracking-widest'}
+          className={
+            errors.otp
+              ? "border-red-500 bg-red-50 text-center text-lg tracking-widest"
+              : "text-center text-lg tracking-widest"
+          }
           disabled={isLoading}
           maxLength={6}
         />
@@ -401,16 +440,16 @@ const Signup = () => {
       </div>
 
       <div className="flex gap-3">
-        <Button 
-          type="button" 
-          variant="outline" 
+        <Button
+          type="button"
+          variant="outline"
           onClick={() => setCurrentStep(2)}
           className="flex-1"
         >
           Back
         </Button>
-        <Button 
-          type="submit" 
+        <Button
+          type="submit"
           className="flex-1 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800"
           disabled={isLoading}
         >
@@ -420,7 +459,7 @@ const Signup = () => {
               Creating Account...
             </>
           ) : (
-            'Create Account'
+            "Create Account"
           )}
         </Button>
       </div>
@@ -433,7 +472,7 @@ const Signup = () => {
         <Card className="bg-white/95 backdrop-blur-sm shadow-2xl border-0">
           {/* Progress Bar */}
           <div className="h-1 bg-gray-200 rounded-t-lg">
-            <div 
+            <div
               className="h-full bg-gradient-to-r from-blue-600 to-blue-700 rounded-t-lg transition-all duration-300"
               style={{ width: `${(currentStep / 3) * 100}%` }}
             />
@@ -446,10 +485,10 @@ const Signup = () => {
                 key={step}
                 className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold transition-all ${
                   step === currentStep
-                    ? 'bg-blue-600 text-white'
+                    ? "bg-blue-600 text-white"
                     : step < currentStep
-                    ? 'bg-green-500 text-white'
-                    : 'bg-gray-200 text-gray-500'
+                      ? "bg-green-500 text-white"
+                      : "bg-gray-200 text-gray-500"
                 }`}
               >
                 {step < currentStep ? <Check size={16} /> : step}
@@ -462,20 +501,22 @@ const Signup = () => {
               <div className="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center text-white text-lg font-bold">
                 🤝
               </div>
-              <span className="text-2xl font-bold text-gray-900">DailyDone</span>
+              <span className="text-2xl font-bold text-gray-900">
+                DailyDone
+              </span>
             </div>
             <CardTitle className="text-2xl font-bold text-gray-900">
-              {currentStep === 1 && 'Create Your Account'}
-              {currentStep === 2 && 'Personal Information'}
-              {currentStep === 3 && 'Verify Email'}
+              {currentStep === 1 && "Create Your Account"}
+              {currentStep === 2 && "Personal Information"}
+              {currentStep === 3 && "Verify Email"}
             </CardTitle>
             <p className="text-gray-600">
-              {currentStep === 1 && 'Enter your email and create a password'}
-              {currentStep === 2 && 'Tell us a bit about yourself'}
-              {currentStep === 3 && 'Enter the verification code we sent you'}
+              {currentStep === 1 && "Enter your email and create a password"}
+              {currentStep === 2 && "Tell us a bit about yourself"}
+              {currentStep === 3 && "Enter the verification code we sent you"}
             </p>
           </CardHeader>
-          
+
           <CardContent>
             {currentStep === 1 && renderStep1()}
             {currentStep === 2 && renderStep2()}
@@ -483,15 +524,18 @@ const Signup = () => {
 
             <div className="mt-8 text-center">
               <p className="text-sm text-gray-600">
-                Already have an account?{' '}
-                <Link to="/login" className="text-blue-600 hover:text-blue-800 hover:underline">
+                Already have an account?{" "}
+                <Link
+                  to="/login"
+                  className="text-blue-600 hover:text-blue-800 hover:underline"
+                >
                   Sign in here
                 </Link>
               </p>
             </div>
           </CardContent>
         </Card>
-        
+
         <div className="mt-8 text-center">
           <Link to="/" className="text-white/80 hover:text-white text-sm">
             ← Back to homepage

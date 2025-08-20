@@ -5,6 +5,7 @@ A modern, full-stack React application for connecting neighbors who need help wi
 ## 🚀 Features
 
 ### Frontend
+
 - **Modern React Architecture**: Built with React 18, TypeScript, and Vite
 - **JWT Authentication**: Secure login/logout with token-based authentication
 - **Role-based Access**: Separate interfaces for users and helpers
@@ -14,6 +15,7 @@ A modern, full-stack React application for connecting neighbors who need help wi
 - **Multi-step Forms**: Comprehensive signup process with validation
 
 ### Backend
+
 - **Express.js API**: RESTful API with JWT authentication
 - **Password Security**: Bcrypt password hashing
 - **CORS Configuration**: Proper cross-origin resource sharing setup
@@ -23,6 +25,7 @@ A modern, full-stack React application for connecting neighbors who need help wi
 ### User Roles
 
 #### Regular Users (Task Requesters)
+
 - Request help with daily tasks
 - Set budget and urgency levels
 - Track task progress
@@ -30,6 +33,7 @@ A modern, full-stack React application for connecting neighbors who need help wi
 - Manage task history
 
 #### Helpers (Service Providers)
+
 - Browse available tasks nearby
 - Accept and complete tasks
 - Earn money helping neighbors
@@ -51,18 +55,21 @@ A modern, full-stack React application for connecting neighbors who need help wi
 ## 📦 Installation
 
 1. **Clone the repository**
+
    ```bash
    git clone <repository-url>
    cd dailydone-app
    ```
 
 2. **Install dependencies**
+
    ```bash
    pnpm install
    ```
 
 3. **Environment Configuration**
    Create a `.env` file in the root directory:
+
    ```env
    JWT_SECRET=your-super-secret-jwt-key-change-this-in-production
    JWT_EXPIRES_IN=7d
@@ -70,6 +77,7 @@ A modern, full-stack React application for connecting neighbors who need help wi
    ```
 
 4. **Start the development server**
+
    ```bash
    pnpm dev
    ```
@@ -82,11 +90,11 @@ A modern, full-stack React application for connecting neighbors who need help wi
 
 The application comes with pre-configured demo accounts:
 
-| Role | Email | Password | Description |
-|------|-------|----------|-------------|
-| User | `demo@dailydone.com` | `Demo123!` | Regular user account |
-| User | `user@example.com` | `Password123!` | Another user account |
-| Helper | `admin@dailydone.com` | `Admin123!` | Helper account |
+| Role   | Email                 | Password       | Description          |
+| ------ | --------------------- | -------------- | -------------------- |
+| User   | `demo@dailydone.com`  | `Demo123!`     | Regular user account |
+| User   | `user@example.com`    | `Password123!` | Another user account |
+| Helper | `admin@dailydone.com` | `Admin123!`    | Helper account       |
 
 ### Navigation
 
@@ -201,6 +209,7 @@ pnpm start
 ## 🧪 Testing
 
 The application includes:
+
 - Form validation testing
 - Authentication flow testing
 - Component interaction testing
@@ -230,6 +239,7 @@ This project is licensed under the MIT License.
 ## 🆘 Support
 
 For questions, issues, or feature requests:
+
 - Create an issue in the repository
 - Check the documentation
 - Review the demo credentials and features

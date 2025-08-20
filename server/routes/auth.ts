@@ -8,7 +8,7 @@ interface User {
   username: string;
   email: string;
   name: string;
-  role: 'user' | 'helper';
+  role: "user" | "helper";
   password: string;
   rating?: number;
   completedTasks?: number;
@@ -19,56 +19,60 @@ interface User {
 interface JWTPayload {
   userId: string;
   email: string;
-  role: 'user' | 'helper';
+  role: "user" | "helper";
 }
 
 // Mock database - In production, use a real database
 const users: User[] = [
   {
-    id: '1',
-    username: 'demo',
-    email: 'demo@dailydone.com',
-    name: 'Demo User',
-    role: 'user',
-    password: '$2a$10$8K1p/a0dqNNH.D9cH4z3.uLZl.wBKoELIWdVtKR1YnqUf8UgUjI7y', // Demo123!
+    id: "1",
+    username: "demo",
+    email: "demo@dailydone.com",
+    name: "Demo User",
+    role: "user",
+    password: "$2a$10$8K1p/a0dqNNH.D9cH4z3.uLZl.wBKoELIWdVtKR1YnqUf8UgUjI7y", // Demo123!
     rating: 4.8,
     completedTasks: 15,
     moneySaved: 2340,
-    createdAt: new Date().toISOString()
+    createdAt: new Date().toISOString(),
   },
   {
-    id: '2',
-    username: 'user',
-    email: 'user@example.com',
-    name: 'John Doe',
-    role: 'user',
-    password: '$2a$10$X5/wRTjT5Fqm7h6n5E9O2uBKl.wBKoELIWdVtKR1YnqUf8UgUjI7y', // Password123!
+    id: "2",
+    username: "user",
+    email: "user@example.com",
+    name: "John Doe",
+    role: "user",
+    password: "$2a$10$X5/wRTjT5Fqm7h6n5E9O2uBKl.wBKoELIWdVtKR1YnqUf8UgUjI7y", // Password123!
     rating: 5.0,
     completedTasks: 8,
     moneySaved: 1200,
-    createdAt: new Date().toISOString()
+    createdAt: new Date().toISOString(),
   },
   {
-    id: '3',
-    username: 'admin',
-    email: 'admin@dailydone.com',
-    name: 'Admin Helper',
-    role: 'helper',
-    password: '$2a$10$Y6/wRTjT5Fqm7h6n5E9O2uCKl.wBKoELIWdVtKR1YnqUf8UgUjI7y', // Admin123!
+    id: "3",
+    username: "admin",
+    email: "admin@dailydone.com",
+    name: "Admin Helper",
+    role: "helper",
+    password: "$2a$10$Y6/wRTjT5Fqm7h6n5E9O2uCKl.wBKoELIWdVtKR1YnqUf8UgUjI7y", // Admin123!
     rating: 4.9,
     completedTasks: 42,
     moneySaved: 0,
-    createdAt: new Date().toISOString()
-  }
+    createdAt: new Date().toISOString(),
+  },
 ];
 
 // JWT configuration
-const JWT_SECRET = process.env.JWT_SECRET || 'your-super-secret-jwt-key-change-this-in-production';
-const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || '7d';
+const JWT_SECRET =
+  process.env.JWT_SECRET ||
+  "your-super-secret-jwt-key-change-this-in-production";
+const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || "7d";
 
 // Utility functions
 const generateToken = (payload: JWTPayload): string => {
-  return jwt.sign(payload, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN } as SignOptions);
+  return jwt.sign(payload, JWT_SECRET, {
+    expiresIn: JWT_EXPIRES_IN,
+  } as SignOptions);
 };
 
 const verifyToken = (token: string): JWTPayload | null => {
@@ -85,29 +89,35 @@ const sanitizeUser = (user: User) => {
 };
 
 const findUserByEmail = (email: string): User | undefined => {
-  return users.find(user => user.email.toLowerCase() === email.toLowerCase());
+  return users.find((user) => user.email.toLowerCase() === email.toLowerCase());
 };
 
 const findUserByUsername = (username: string): User | undefined => {
-  return users.find(user => user.username.toLowerCase() === username.toLowerCase());
+  return users.find(
+    (user) => user.username.toLowerCase() === username.toLowerCase(),
+  );
 };
 
 const findUserById = (id: string): User | undefined => {
-  return users.find(user => user.id === id);
+  return users.find((user) => user.id === id);
 };
 
 // Auth middleware
 export const authenticateToken: RequestHandler = (req, res, next) => {
-  const authHeader = req.headers['authorization'];
-  const token = authHeader && authHeader.split(' ')[1]; // Bearer TOKEN
+  const authHeader = req.headers["authorization"];
+  const token = authHeader && authHeader.split(" ")[1]; // Bearer TOKEN
 
   if (!token) {
-    return res.status(401).json({ success: false, message: 'Access token required' });
+    return res
+      .status(401)
+      .json({ success: false, message: "Access token required" });
   }
 
   const payload = verifyToken(token);
   if (!payload) {
-    return res.status(403).json({ success: false, message: 'Invalid or expired token' });
+    return res
+      .status(403)
+      .json({ success: false, message: "Invalid or expired token" });
   }
 
   req.user = payload;
@@ -123,7 +133,7 @@ export const handleLogin: RequestHandler = async (req, res) => {
     if (!email || !password) {
       return res.status(400).json({
         success: false,
-        message: 'Email and password are required'
+        message: "Email and password are required",
       });
     }
 
@@ -132,7 +142,7 @@ export const handleLogin: RequestHandler = async (req, res) => {
     if (!user) {
       return res.status(401).json({
         success: false,
-        message: 'Invalid email or password'
+        message: "Invalid email or password",
       });
     }
 
@@ -141,7 +151,7 @@ export const handleLogin: RequestHandler = async (req, res) => {
     if (!isValidPassword) {
       return res.status(401).json({
         success: false,
-        message: 'Invalid email or password'
+        message: "Invalid email or password",
       });
     }
 
@@ -149,23 +159,22 @@ export const handleLogin: RequestHandler = async (req, res) => {
     const token = generateToken({
       userId: user.id,
       email: user.email,
-      role: user.role
+      role: user.role,
     });
 
     // Return success response
     res.json({
       success: true,
-      message: 'Login successful',
+      message: "Login successful",
       token,
       user: sanitizeUser(user),
-      redirect_url: user.role === 'helper' ? '/helper-dashboard' : '/dashboard'
+      redirect_url: user.role === "helper" ? "/helper-dashboard" : "/dashboard",
     });
-
   } catch (error) {
-    console.error('Login error:', error);
+    console.error("Login error:", error);
     res.status(500).json({
       success: false,
-      message: 'Internal server error'
+      message: "Internal server error",
     });
   }
 };
@@ -173,13 +182,13 @@ export const handleLogin: RequestHandler = async (req, res) => {
 // Register handler
 export const handleRegister: RequestHandler = async (req, res) => {
   try {
-    const { username, email, password, name, role = 'user' } = req.body;
+    const { username, email, password, name, role = "user" } = req.body;
 
     // Validation
     if (!username || !email || !password || !name) {
       return res.status(400).json({
         success: false,
-        message: 'All fields are required'
+        message: "All fields are required",
       });
     }
 
@@ -188,7 +197,7 @@ export const handleRegister: RequestHandler = async (req, res) => {
     if (!emailRegex.test(email)) {
       return res.status(400).json({
         success: false,
-        message: 'Invalid email format'
+        message: "Invalid email format",
       });
     }
 
@@ -197,7 +206,8 @@ export const handleRegister: RequestHandler = async (req, res) => {
     if (!usernameRegex.test(username)) {
       return res.status(400).json({
         success: false,
-        message: 'Username must be 3-20 characters: letters, numbers, and underscore only'
+        message:
+          "Username must be 3-20 characters: letters, numbers, and underscore only",
       });
     }
 
@@ -205,7 +215,7 @@ export const handleRegister: RequestHandler = async (req, res) => {
     if (password.length < 8) {
       return res.status(400).json({
         success: false,
-        message: 'Password must be at least 8 characters long'
+        message: "Password must be at least 8 characters long",
       });
     }
 
@@ -213,14 +223,14 @@ export const handleRegister: RequestHandler = async (req, res) => {
     if (findUserByEmail(email)) {
       return res.status(409).json({
         success: false,
-        message: 'Email already registered'
+        message: "Email already registered",
       });
     }
 
     if (findUserByUsername(username)) {
       return res.status(409).json({
         success: false,
-        message: 'Username already taken'
+        message: "Username already taken",
       });
     }
 
@@ -233,12 +243,12 @@ export const handleRegister: RequestHandler = async (req, res) => {
       username: username.toLowerCase(),
       email: email.toLowerCase(),
       name,
-      role: role as 'user' | 'helper',
+      role: role as "user" | "helper",
       password: hashedPassword,
       rating: 5.0,
       completedTasks: 0,
       moneySaved: 0,
-      createdAt: new Date().toISOString()
+      createdAt: new Date().toISOString(),
     };
 
     // Add to mock database
@@ -248,23 +258,23 @@ export const handleRegister: RequestHandler = async (req, res) => {
     const token = generateToken({
       userId: newUser.id,
       email: newUser.email,
-      role: newUser.role
+      role: newUser.role,
     });
 
     // Return success response
     res.status(201).json({
       success: true,
-      message: 'Registration successful',
+      message: "Registration successful",
       token,
       user: sanitizeUser(newUser),
-      redirect_url: newUser.role === 'helper' ? '/helper-dashboard' : '/dashboard'
+      redirect_url:
+        newUser.role === "helper" ? "/helper-dashboard" : "/dashboard",
     });
-
   } catch (error) {
-    console.error('Registration error:', error);
+    console.error("Registration error:", error);
     res.status(500).json({
       success: false,
-      message: 'Internal server error'
+      message: "Internal server error",
     });
   }
 };
@@ -272,13 +282,13 @@ export const handleRegister: RequestHandler = async (req, res) => {
 // Verify token handler
 export const handleVerifyToken: RequestHandler = (req, res) => {
   try {
-    const authHeader = req.headers['authorization'];
-    const token = authHeader && authHeader.split(' ')[1];
+    const authHeader = req.headers["authorization"];
+    const token = authHeader && authHeader.split(" ")[1];
 
     if (!token) {
       return res.status(401).json({
         success: false,
-        message: 'No token provided'
+        message: "No token provided",
       });
     }
 
@@ -286,7 +296,7 @@ export const handleVerifyToken: RequestHandler = (req, res) => {
     if (!payload) {
       return res.status(403).json({
         success: false,
-        message: 'Invalid or expired token'
+        message: "Invalid or expired token",
       });
     }
 
@@ -295,21 +305,20 @@ export const handleVerifyToken: RequestHandler = (req, res) => {
     if (!user) {
       return res.status(404).json({
         success: false,
-        message: 'User not found'
+        message: "User not found",
       });
     }
 
     res.json({
       success: true,
       user: sanitizeUser(user),
-      valid: true
+      valid: true,
     });
-
   } catch (error) {
-    console.error('Token verification error:', error);
+    console.error("Token verification error:", error);
     res.status(500).json({
       success: false,
-      message: 'Internal server error'
+      message: "Internal server error",
     });
   }
 };
@@ -321,17 +330,16 @@ export const handleLogout: RequestHandler = (req, res) => {
     // 1. Add the token to a blacklist
     // 2. Clear any server-side sessions
     // 3. Log the logout event
-    
+
     res.json({
       success: true,
-      message: 'Logout successful'
+      message: "Logout successful",
     });
-
   } catch (error) {
-    console.error('Logout error:', error);
+    console.error("Logout error:", error);
     res.status(500).json({
       success: false,
-      message: 'Internal server error'
+      message: "Internal server error",
     });
   }
 };
