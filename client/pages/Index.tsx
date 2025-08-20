@@ -14,6 +14,7 @@ import {
 import { Slider } from "@/components/ui/slider";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/components/ui/use-toast";
+import Footer from '../components/Footer';
 
 const Index = () => {
   const [taskData, setTaskData] = useState({
@@ -417,147 +418,7 @@ const Index = () => {
       </section>
 
       {/* Footer */}
-      <footer className="bg-gray-900 text-white py-16">
-        <div className="max-w-6xl mx-auto px-6">
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
-            <div>
-              <h3 className="text-lg font-bold text-blue-400 mb-6">Company</h3>
-              <div className="space-y-3">
-                <a
-                  href="#"
-                  className="block text-gray-300 hover:text-white transition-colors"
-                >
-                  About DailyDone
-                </a>
-                <a
-                  href="#"
-                  className="block text-gray-300 hover:text-white transition-colors"
-                >
-                  How it works
-                </a>
-                <a
-                  href="#"
-                  className="block text-gray-300 hover:text-white transition-colors"
-                >
-                  Careers
-                </a>
-                <a
-                  href="#"
-                  className="block text-gray-300 hover:text-white transition-colors"
-                >
-                  Press
-                </a>
-                <a
-                  href="#"
-                  className="block text-gray-300 hover:text-white transition-colors"
-                >
-                  Blog
-                </a>
-              </div>
-            </div>
-
-            <div>
-              <h3 className="text-lg font-bold text-blue-400 mb-6">Products</h3>
-              <div className="space-y-3">
-                <a
-                  href="#"
-                  className="block text-gray-300 hover:text-white transition-colors"
-                >
-                  For customers
-                </a>
-                <Link
-                  to="/helper-signup"
-                  className="block text-gray-300 hover:text-white transition-colors"
-                >
-                  For helpers
-                </Link>
-                <a
-                  href="#"
-                  className="block text-gray-300 hover:text-white transition-colors"
-                >
-                  DailyDone Business
-                </a>
-                <a
-                  href="#"
-                  className="block text-gray-300 hover:text-white transition-colors"
-                >
-                  Gift cards
-                </a>
-              </div>
-            </div>
-
-            <div>
-              <h3 className="text-lg font-bold text-blue-400 mb-6">Support</h3>
-              <div className="space-y-3">
-                <a
-                  href="#"
-                  className="block text-gray-300 hover:text-white transition-colors"
-                >
-                  Help Center
-                </a>
-                <a
-                  href="#"
-                  className="block text-gray-300 hover:text-white transition-colors"
-                >
-                  Safety
-                </a>
-                <a
-                  href="#"
-                  className="block text-gray-300 hover:text-white transition-colors"
-                >
-                  Contact us
-                </a>
-                <a
-                  href="#"
-                  className="block text-gray-300 hover:text-white transition-colors"
-                >
-                  Trust & Safety
-                </a>
-                <a
-                  href="#"
-                  className="block text-gray-300 hover:text-white transition-colors"
-                >
-                  Community guidelines
-                </a>
-              </div>
-            </div>
-
-            <div>
-              <h3 className="text-lg font-bold text-blue-400 mb-6">Global</h3>
-              <div className="space-y-3">
-                <a
-                  href="#"
-                  className="block text-gray-300 hover:text-white transition-colors"
-                >
-                  Cities
-                </a>
-                <a
-                  href="#"
-                  className="block text-gray-300 hover:text-white transition-colors"
-                >
-                  Countries
-                </a>
-                <a
-                  href="#"
-                  className="block text-gray-300 hover:text-white transition-colors"
-                >
-                  Accessibility
-                </a>
-                <a
-                  href="#"
-                  className="block text-gray-300 hover:text-white transition-colors"
-                >
-                  Diversity
-                </a>
-              </div>
-            </div>
-          </div>
-
-          <div className="border-t border-gray-700 pt-8 text-center text-gray-400">
-            <p>&copy; 2025 DailyDone Technologies Inc. All rights reserved.</p>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 };
