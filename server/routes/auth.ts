@@ -1,5 +1,5 @@
 import { RequestHandler } from "express";
-import jwt from "jsonwebtoken";
+import jwt, { SignOptions } from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 
 // Types
